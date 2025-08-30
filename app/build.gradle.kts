@@ -62,4 +62,9 @@ dependencies {
     implementation(libs.navigation.compose)
 
     implementation(libs.splash)
+
+    implementation(libs.icon.extended)
+
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.gson)
 }
