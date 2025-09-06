@@ -27,6 +27,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
@@ -58,11 +59,17 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jotadev.doctoryaapp.R
 import com.jotadev.doctoryaapp.ui.theme.PrimaryColor
 
 @Composable
-fun SignInScreen() {
+fun SignInScreen(
+    viewModel: SignInViewModel = viewModel()
+) {
+
+    val state = viewModel.state
+
 
     var email by remember{
         mutableStateOf("")
@@ -236,7 +243,9 @@ fun SignInScreen() {
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp),
-                        onClick = {}
+                        onClick = {
+                            viewModel.signIn(email,password)
+                        }
                     ) {
                         Text(
                             text = "Ingresar",
@@ -245,6 +254,35 @@ fun SignInScreen() {
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
+
+                    if(state.user != null){
+                        Text(
+                            text = "Bienvenido ${state.user?.name} - ${state.user?.email}",
+                            style = TextStyle(
+                                color = Color.Black,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                        )
+                    }
+
+                    if(state.error != null){
+                        Text(
+                            text = state.error?:"",
+                            style = TextStyle(
+                                color = Color.Red,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                        )
+                    }
+
+                    if(state.isLoading){
+                        Box(modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator()
+                        }
+                    }
 
                     Text(
                         text = buildAnnotatedString {

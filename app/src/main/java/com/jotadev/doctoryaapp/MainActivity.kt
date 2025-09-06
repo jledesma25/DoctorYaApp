@@ -14,6 +14,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.jotadev.doctoryaapp.data.Api
 import com.jotadev.doctoryaapp.data.User
+import com.jotadev.doctoryaapp.data.model.SignInRequest
+import com.jotadev.doctoryaapp.data.model.UserDto
 import com.jotadev.doctoryaapp.navigation.SetupNavigation
 import com.jotadev.doctoryaapp.ui.theme.DoctorYaAppTheme
 import kotlinx.coroutines.Dispatchers
@@ -27,25 +29,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        GlobalScope.launch(Dispatchers.Main) {
-
-            val response = withContext(Dispatchers.IO) {
-                Api.build().getUsers()
-            }
-            if (response.isSuccessful) {
-
-                val users = response.body()
-                users?.forEach { user ->
-                    println("Id: ${user.id} - Name: ${user.name} - UserName: ${user.userName} - Email: ${user.email}")
-                }
-
-            } else {
-                println(response.message())
-            }
-
-
-        }
-
 
 
 
@@ -58,3 +41,41 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/*
+GlobalScope.launch(Dispatchers.Main) {
+
+            println("Hola")
+            val response: List<User> = withContext(Dispatchers.IO){
+                Api.build().getUsers()
+            }
+            response.forEach { user ->
+                println(user.name)
+            }
+            println("Adios")
+        }
+
+ */
+
+/*
+ GlobalScope.launch(Dispatchers.Main) {
+
+            println("Hola")
+            val response = withContext(Dispatchers.IO){
+                Api.build().signIn(
+                    SignInRequest(
+                        correo = "postman@gmail.com",
+                        clave = "1234"
+                    )
+                )
+            }
+
+            if(response.isSuccessful){
+                val user = response.body()
+                println("Usuario: ${user?.name}")
+            }else{
+                println("Credenciales incorrectas")
+            }
+
+            println("Adios")
+        }
+ */
