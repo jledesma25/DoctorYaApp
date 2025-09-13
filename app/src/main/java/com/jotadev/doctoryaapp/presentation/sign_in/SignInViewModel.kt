@@ -5,9 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jotadev.doctoryaapp.data.Api
-import com.jotadev.doctoryaapp.data.model.SignInRequest
-import com.jotadev.doctoryaapp.data.model.UserDto
+import com.jotadev.doctoryaapp.data.Result
+import com.jotadev.doctoryaapp.data.repository.AuthRepositoryImp
+import com.jotadev.doctoryaapp.domain.model.User
+import com.jotadev.doctoryaapp.domain.repository.AuthRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -17,6 +18,8 @@ class SignInViewModel : ViewModel() {
     var state by mutableStateOf(SignInState())
       private set
 
+    val repository : AuthRepository = AuthRepositoryImp()
+
     fun signIn(email:String, password:String){
 
         viewModelScope.launch { //Dispatchers.Main
@@ -24,23 +27,17 @@ class SignInViewModel : ViewModel() {
             state = state.copy(isLoading = true)
 
             val response = withContext(Dispatchers.IO){
-                Api.build().signIn(
-                    SignInRequest(
-                        correo = "postman@gmail.com",
-                        clave = "12345"
-                    )
-                )
+                repository.signIn("postman@gmail.com","12345")
             }
 
-            if(response.isSuccessful){
-                //val user = response.body()
-                //println("Usuario: ${user?.name}")
-                state = state.copy(user = response.body(), error = null, isLoading = false)
-            }else{
-                state = state.copy(error = response.message())
+            when(response){
+                is Result.Error -> {
+                    state = state.copy(error = response.message, user = null, isLoading = false)
+                }
+                is Result.Success -> {
+                    state = state.copy(user = response.data, error = null, isLoading = false)
+                }
             }
-
-            //state = state.copy(isLoading = false)
         }
 
     }
@@ -49,6 +46,6 @@ class SignInViewModel : ViewModel() {
 data class SignInState(
     val isLoading: Boolean = false, //true = Mostrar progress , false = ocultar progress
     val error: String? = null, //null = No hay error , "Error de conexion" = Mostrar error
-    val user: UserDto? = null //null = No hay usuario , UserDto = Mostrar usuario
+    val user: User? = null //null = No hay usuario , User = Mostrar usuario
 )
 

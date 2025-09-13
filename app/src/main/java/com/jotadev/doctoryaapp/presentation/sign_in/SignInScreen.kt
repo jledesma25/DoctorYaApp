@@ -61,15 +61,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jotadev.doctoryaapp.R
+import com.jotadev.doctoryaapp.data.model.UserDto
 import com.jotadev.doctoryaapp.ui.theme.PrimaryColor
 
 @Composable
 fun SignInScreen(
     viewModel: SignInViewModel = viewModel()
 ) {
-
     val state = viewModel.state
-
 
     var email by remember{
         mutableStateOf("")

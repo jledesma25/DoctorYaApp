@@ -35,7 +35,7 @@ object Api {
 
         @GET("users")
         //suspend fun getUsers() : Response<List<User>>
-        suspend fun getUsers():List<User>
+        suspend fun getUsers():List<User2>
 
         @POST("users/login")
         suspend fun signIn(@Body request: SignInRequest) : Response<UserDto?>
