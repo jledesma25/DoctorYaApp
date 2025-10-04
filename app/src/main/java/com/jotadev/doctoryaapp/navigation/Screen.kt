@@ -13,3 +13,6 @@ object OnBoarding
 @Serializable
 object SignIn
 
+@Serializable
+object Home
+

@@ -12,6 +12,7 @@ import com.jotadev.doctoryaapp.domain.repository.AuthRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.lang.Thread.sleep
 
 class SignInViewModel : ViewModel() {
 
@@ -27,7 +28,7 @@ class SignInViewModel : ViewModel() {
             state = state.copy(isLoading = true)
 
             val response = withContext(Dispatchers.IO){
-                repository.signIn("postman@gmail.com","12345")
+                repository.signIn(email,password)
             }
 
             when(response){
@@ -41,11 +42,15 @@ class SignInViewModel : ViewModel() {
         }
 
     }
+
+    fun clearError(){
+        state = state.copy(error = null)
+    }
 }
 
 data class SignInState(
     val isLoading: Boolean = false, //true = Mostrar progress , false = ocultar progress
     val error: String? = null, //null = No hay error , "Error de conexion" = Mostrar error
-    val user: User? = null //null = No hay usuario , User = Mostrar usuario
+    val user: User? = null //null = No hay usuario , User = Navegacion
 )
 

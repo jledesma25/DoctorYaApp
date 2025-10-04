@@ -1,5 +1,6 @@
 package com.jotadev.doctoryaapp.presentation.sign_in
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -35,6 +36,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -60,28 +63,59 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.jotadev.doctoryaapp.R
 import com.jotadev.doctoryaapp.data.model.UserDto
+import com.jotadev.doctoryaapp.navigation.Home
+import com.jotadev.doctoryaapp.presentation.components.AlertComponent
+import com.jotadev.doctoryaapp.presentation.components.CustomButton
 import com.jotadev.doctoryaapp.ui.theme.PrimaryColor
 
 @Composable
 fun SignInScreen(
-    viewModel: SignInViewModel = viewModel()
+    viewModel: SignInViewModel = viewModel(),
+    onNavigationHome:()->Unit
 ) {
     val state = viewModel.state
 
     var email by remember{
-        mutableStateOf("")
+        mutableStateOf("postman@gmail.com")
     }
     var password by remember{
-        mutableStateOf("")
+        mutableStateOf("12345")
     }
     var visualTransformation by remember{
         mutableStateOf(false) //true = Visualizar, //false = No visualizar
     }
+    var showDialog by remember {
+        mutableStateOf(false)
+    }
 
     val focusManager = LocalFocusManager.current
 
+    //TOAST
+    //val context = LocalContext.current
+    //Toast.makeText(context,"Texto", Toast.LENGTH_LONG).show()
+
+    if(state.error != null){
+        showDialog = true
+    }
+
+    if(state.user != null){
+        onNavigationHome()
+    }
+
+
+    if(showDialog) {
+        AlertComponent(
+            title = "Informativo",
+            body = state.error ?: "",
+            dismiss = {
+                showDialog = false
+                viewModel.clearError()
+            }
+        )
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
 
@@ -238,50 +272,17 @@ fun SignInScreen(
 
                     Spacer(modifier = Modifier.height(32.dp))
 
-                    OutlinedButton(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(50.dp),
+                    CustomButton(
+                        label = "Ingresar",
+                        isLoading = state.isLoading,
                         onClick = {
                             viewModel.signIn(email,password)
                         }
-                    ) {
-                        Text(
-                            text = "Ingresar",
-                            fontSize = 16.sp
-                        )
-                    }
+                    )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    if(state.user != null){
-                        Text(
-                            text = "Bienvenido ${state.user?.name} - ${state.user?.email}",
-                            style = TextStyle(
-                                color = Color.Black,
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                        )
-                    }
 
-                    if(state.error != null){
-                        Text(
-                            text = state.error?:"",
-                            style = TextStyle(
-                                color = Color.Red,
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                        )
-                    }
-
-                    if(state.isLoading){
-                        Box(modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center) {
-                            CircularProgressIndicator()
-                        }
-                    }
 
                     Text(
                         text = buildAnnotatedString {
@@ -321,8 +322,8 @@ fun SignInScreen(
 
 }
 
-@Preview(showSystemUi = true)
+/*@Preview(showSystemUi = true)
 @Composable
 fun PreviewSignInScreen() {
     SignInScreen()
-}
+}*/

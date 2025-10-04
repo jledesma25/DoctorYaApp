@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 
 import androidx.navigation.compose.rememberNavController
+import com.jotadev.doctoryaapp.presentation.home.HomeScreen
 import com.jotadev.doctoryaapp.presentation.on_boarding.OnBoardingScreen
 import com.jotadev.doctoryaapp.presentation.sign_in.SignInScreen
 
@@ -15,7 +16,7 @@ fun SetupNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = OnBoarding
+        startDestination = SignIn
     ){
         composable<OnBoarding> {
             OnBoardingScreen(
@@ -25,7 +26,14 @@ fun SetupNavigation() {
             )
         }
         composable<SignIn> {
-            SignInScreen()
+            SignInScreen(
+                onNavigationHome = {
+                    navController.navigate(Home)
+                }
+            )
+        }
+        composable<Home>{
+            HomeScreen()
         }
     }
 
