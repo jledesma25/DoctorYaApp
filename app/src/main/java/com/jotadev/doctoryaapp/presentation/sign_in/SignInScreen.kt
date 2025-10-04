@@ -102,7 +102,9 @@ fun SignInScreen(
     }
 
     if(state.user != null){
-        onNavigationHome()
+        LaunchedEffect(state.user) {
+            onNavigationHome()
+        }
     }
 
 
