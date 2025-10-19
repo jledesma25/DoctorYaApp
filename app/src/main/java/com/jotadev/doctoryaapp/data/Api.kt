@@ -1,5 +1,6 @@
 package com.jotadev.doctoryaapp.data
 
+import com.jotadev.doctoryaapp.data.model.AppointmentDto
 import com.jotadev.doctoryaapp.data.model.SignInRequest
 import com.jotadev.doctoryaapp.data.model.UserDto
 import retrofit2.Response
@@ -7,7 +8,10 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 object Api {
 
@@ -39,6 +43,14 @@ object Api {
 
         @POST("users/login")
         suspend fun signIn(@Body request: SignInRequest) : Response<UserDto?>
+
+        //
+        @GET("patients/{userId}/appointments")
+        suspend fun getAppointments(
+            @Header("Authorization") token:String = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OGM4NDE4NjI4MzQ1OGJjYjg4ODljOSIsImlhdCI6MTc2MDg5MTU4MiwiZXhwIjoxNzYwODk1MTgyfQ.Oy8ufi4-D4pTFGFCrgls-4tkg4p-TrYM04sJnUCPtRo",
+            @Path("userId") userId:String //66b63e4b4cd409a8dbb48038
+        ): Response<List<AppointmentDto>>
+
     }
 
 

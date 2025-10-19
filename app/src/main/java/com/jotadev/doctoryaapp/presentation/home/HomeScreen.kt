@@ -3,6 +3,7 @@ package com.jotadev.doctoryaapp.presentation.home
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -34,6 +35,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.rememberNavController
+import com.jotadev.doctoryaapp.navigation.Settings
+import com.jotadev.doctoryaapp.navigation.SetupNavigationMenu
 import com.jotadev.doctoryaapp.presentation.home.components.TopBarComponent
 import com.jotadev.doctoryaapp.presentation.home.model.BottomNavigationItem
 import com.jotadev.doctoryaapp.presentation.home.model.getItemsNavigation
@@ -43,10 +47,10 @@ import com.jotadev.doctoryaapp.ui.theme.PrimaryColor
 fun HomeScreen(
     modifier: Modifier = Modifier
 ) {
-
+    val navController = rememberNavController()
 
     var selectedItemIndex by remember {
-        mutableStateOf(0)
+        mutableStateOf(1)
     }
 
     Scaffold(
@@ -67,6 +71,7 @@ fun HomeScreen(
                         selected = selectedItemIndex == index,
                         onClick = {
                             selectedItemIndex = index
+                            navController.navigate(item.currentRoute)
                         },
                         label = {
                             Text(
@@ -97,7 +102,7 @@ fun HomeScreen(
             }
 
         },
-        floatingActionButton = {
+        /*floatingActionButton = {
 
             FloatingActionButton(
                 onClick = { /* Acción al hacer clic en el botón */ },
@@ -116,13 +121,15 @@ fun HomeScreen(
                 )
             }
 
-        }
+        }*/
     ) { paddingValues ->
 
-        Box(modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center) {
-            Text("Aqui se hará la pantalla del listado de categorias")
-        }
+
+        SetupNavigationMenu(
+            navController = navController,
+            paddingValues = paddingValues
+        )
+
 
     }
 }
